@@ -12,6 +12,10 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     var text = '';
     return Scaffold(
+        appBar: AppBar(
+          title: Text('Your assistant'),
+          centerTitle: true,
+        ),
         body: BlocListener<TtsBloc, TtsState>(
           listenWhen: (_, listCurrent) => listCurrent is TtsPlaying,
           listener: (context, listState) async {
@@ -23,30 +27,24 @@ class Home extends StatelessWidget {
                 builder: (context) {
                   return BlocBuilder<TtsBloc, TtsState>(
                     buildWhen: (previous, current) =>
-                        previous is TtsPlayInProgress ||
-                        current is TtsPlayInProgress,
+                    current is TtsPlayInProgress ||
+                        current is TtsStop ||
+                        current is TtsFailure,
+                    // ignore: missing_return
                     builder: (context, state) {
                       if (state is TtsPlayInProgress) {
-                        print(
-                            '6666666666666666666666666666666666666666666666666666666' +
-                                text);
                         text = text + state.word;
                         return Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(16.0),
                           child: Text(
                             text,
                             softWrap: true,
+                            style: TextStyle(fontSize: 16),
                           ),
                         );
+                      } else {
+                        Navigator.of(context).pop();
                       }
-                      // throw 'UnHandled state TtsBloc: $state';
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          text,
-                          softWrap: true,
-                        ),
-                      );
                     },
                   );
                 },

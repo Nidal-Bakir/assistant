@@ -10,7 +10,7 @@ class FABStt extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<SttBloc, SttState>(
       listenWhen: (_, current) =>
-      current is SttIndexRecognitionFailure || current is SttFailure,
+          current is SttIndexRecognitionFailure || current is SttFailure,
       listener: (context, state) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -25,21 +25,20 @@ class FABStt extends StatelessWidget {
       builder: (context, state) {
         if (state is SttChangeSoundLevel) {
           return Container(
-            width: 40,
-            height: 40,
+            width: 60,
+            height: 60,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
                     blurRadius: .26,
                     spreadRadius: state.level * 1.5,
-                    color: Colors.black.withOpacity(.05))
+                    color: Colors.pink.withOpacity(.5))
               ],
-              color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(50)),
             ),
             child: IconButton(
-              icon: Icon(Icons.cancel_outlined),
+              icon: Icon(Icons.mic_off),
               onPressed: () => context.read<SttBloc>().add(SttListenCanceled()),
             ),
           );
@@ -48,24 +47,26 @@ class FABStt extends StatelessWidget {
         return BlocBuilder<TtsBloc, TtsState>(
           builder: (context, ttsState) {
             return Container(
-              width: 40,
-              height: 40,
+              width: 60,
+              height: 60,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
                       blurRadius: .26,
                       spreadRadius: 0,
-                      color: Colors.black.withOpacity(.05))
+                      color: Colors.pink.withOpacity(.7))
                 ],
-                color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
               child: IconButton(
-                icon: Icon(Icons.mic),
-                onPressed: state is SttListening
-                    || ttsState is TtsPlaying ||
-                    ttsState is TtsPlayInProgress
+                icon: Icon(
+                  Icons.mic,
+                  color: Colors.white,
+                ),
+                onPressed: state is SttListening ||
+                        ttsState is TtsPlaying ||
+                        ttsState is TtsPlayInProgress
                     ? null
                     : () => context.read<SttBloc>().add(SttListenStarted()),
               ),

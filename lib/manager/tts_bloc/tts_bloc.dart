@@ -14,18 +14,14 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   TtsBloc(this._repository) : super(TtsInitial()) {
     _repository.ttsStateStream.listen((event) {
       if (event == TtsPluginState.playing) {
-        print('plauing');
         emit(TtsPlaying());
       } else if (event == TtsPluginState.stopped) {
-        print('TtsStop');
         emit(TtsStop());
       } else if (event == TtsPluginState.error) {
-        print('TtsFailure');
         emit(TtsFailure());
       }
     });
     _repository.wordProgressStream.listen((event) {
-      print('TtsPlayInProgress'+event);
       emit(TtsPlayInProgress(event));
     });
   }

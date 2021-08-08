@@ -45,62 +45,50 @@ class MyApp extends StatelessWidget {
         create: (context) =>
             TtsBloc(RepositoryProvider.of<TextToSpeechRepository>(context)),
         child: MaterialApp(
-          home: MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => SttBloc(
-                    RepositoryProvider.of<SpeechToTextRepository>(context)),
-              ),
-              BlocProvider<QaBloc>(
-                create: (context) =>
-                    QaBloc(RepositoryProvider.of<FireStoreRepository>(context)),
-              ),
-            ],
-            child: Home(),
-          ),
-          title: 'Flutter Demo',
+
+          title: 'Your assistant',
           theme: ThemeData(
             primarySwatch: Colors.pink,
           ),
-          // onGenerateRoute: (settings) {
-          //   switch (settings.name) {
-          //     case '/':
-          //       return MaterialPageRoute(
-          //         builder: (context) => BlocProvider(
-          //           create: (context) => AuthBloc(
-          //               RepositoryProvider.of<FireBaseAuthRepository>(context)),
-          //           child: Login(),
-          //         ),
-          //       );
-          //
-          //     case '/create-account':
-          //       return MaterialPageRoute(
-          //         builder: (context) => BlocProvider(
-          //           create: (context) => AuthBloc(
-          //               RepositoryProvider.of<FireBaseAuthRepository>(context)),
-          //           child: CreateAccount(),
-          //         ),
-          //       );
-          //     case '/home':
-          //       return MaterialPageRoute(
-          //         builder: (context) => MultiBlocProvider(
-          //           providers: [
-          //             BlocProvider(
-          //               create: (context) => SttBloc(
-          //                   RepositoryProvider.of<SpeechToTextRepository>(context)),
-          //             ),
-          //
-          //             BlocProvider<QaBloc>(
-          //               create: (context) =>
-          //                   QaBloc(RepositoryProvider.of<FireStoreRepository>(context)),
-          //             ),
-          //           ],
-          //           child: Home(),
-          //         ),
-          //       );
-          //   }
-          //   throw Exception('unhandled route: ' + settings.name);
-          // },
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/':
+                return MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                    create: (context) => AuthBloc(
+                        RepositoryProvider.of<FireBaseAuthRepository>(context)),
+                    child: Login(),
+                  ),
+                );
+
+              case '/create-account':
+                return MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                    create: (context) => AuthBloc(
+                        RepositoryProvider.of<FireBaseAuthRepository>(context)),
+                    child: CreateAccount(),
+                  ),
+                );
+              case '/home':
+                return MaterialPageRoute(
+                  builder: (context) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => SttBloc(
+                            RepositoryProvider.of<SpeechToTextRepository>(context)),
+                      ),
+
+                      BlocProvider<QaBloc>(
+                        create: (context) =>
+                            QaBloc(RepositoryProvider.of<FireStoreRepository>(context)),
+                      ),
+                    ],
+                    child: Home(),
+                  ),
+                );
+            }
+            throw Exception('unhandled route: ' + settings.name);
+          },
         ),
       ),
     );

@@ -13,22 +13,18 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FireBaseAuthRepository _repository;
 
-  AuthBloc(this._repository) : super(AuthInitial()) {
-    // if the user already logged-in
-    var _user = _repository.getUser();
-    if (_user != null) {
-      emit(AuthSuccess(_user));
-    }
-  }
+  AuthBloc(this._repository) : super(AuthInitial());
 
   @override
   Stream<AuthState> mapEventToState(
     AuthEvent event,
   ) async* {
-    if (event is AuthCreateAccount) {
+    if (event is AuthAccountCreated) {
       yield* _authCreateAccountHandler(event.email, event.password);
-    } else if (event is AuthLogin) {
+    } else if (event is AuthAccountLoggedIn) {
       yield* _authLoginHandler(event.email, event.password);
+    } else if (event is AuthStateChecked) {
+      yield* _authStateCheckedHandler();
     }
   }
 
@@ -58,6 +54,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield AuthFailure(e.msg);
     } on Exception {
       yield AuthFailure('unknown error try again later! ');
+    }
+  }
+
+  // if the user already logged-in
+  Stream<AuthState> _authStateCheckedHandler() async* {
+    var _user = _repository.getUser(); // get current user
+
+    if (_user != null) {
+      yield AuthSuccess(_user);
     }
   }
 }

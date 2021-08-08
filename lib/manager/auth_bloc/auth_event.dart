@@ -4,22 +4,29 @@ abstract class AuthEvent extends Equatable {
   const AuthEvent();
 }
 
-class AuthCreateAccount extends AuthEvent {
+class AuthAccountCreated extends AuthEvent {
   final String email;
   final String password;
 
-  const AuthCreateAccount(this.email, this.password);
+  const AuthAccountCreated(this.email, this.password);
 
   @override
   List<Object> get props => [email, password];
 }
 
-class AuthLogin extends AuthEvent {
+class AuthAccountLoggedIn extends AuthEvent {
   final String email;
   final String password;
 
-  const AuthLogin(this.email, this.password);
+  const AuthAccountLoggedIn(this.email, this.password);
 
   @override
   List<Object> get props => [email, password];
+}
+
+class AuthStateChecked extends AuthEvent {
+  const AuthStateChecked();
+
+  @override
+  List<Object> get props => [];
 }

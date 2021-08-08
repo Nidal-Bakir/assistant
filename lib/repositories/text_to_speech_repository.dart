@@ -49,15 +49,6 @@ class TextToSpeechRepository {
     // [text] is overall answer
     // [word] last word the voice say
     flutterTts.setProgressHandler((text, start, end, word) {
-      print('text : ' +
-          text +
-          ', start : ' +
-          start.toString() +
-          ', end :' +
-          end.toString() +
-          ' word :' +
-          word);
-
       _wordProgressSC.sink.add(word);
     });
   }
