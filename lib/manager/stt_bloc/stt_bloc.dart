@@ -32,14 +32,13 @@ class SttBloc extends Bloc<SttEvent, SttState> {
     _repository.speechRecognitionStream.listen((event) {
       if (event.finalResult) {
         if (int.tryParse(event.recognizedWords) != null) {
-          emit(SttRecognitionSuccess(event.recognizedWords));
+          emit(SttRecognitionSuccess(int.parse(event.recognizedWords)));
         } else {
           emit(SttIndexRecognitionFailure());
         }
       }
     });
   }
-
 
   @override
   Future<Function> close() {

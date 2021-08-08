@@ -43,12 +43,13 @@ class _MyAppState extends State<MyApp> {
     initTts();
   }
 
-  initTts() {
+  initTts()async {
     flutterTts = FlutterTts();
-
+  await  flutterTts.setEngine('com.google.android.tts');
     if (isAndroid) {
-      _getDefaultEngine();
+      // _getDefaultEngine();
     }
+  await  flutterTts.setLanguage('ar');
 
     flutterTts.setStartHandler(() {
       setState(() {
@@ -56,7 +57,15 @@ class _MyAppState extends State<MyApp> {
         ttsState = TtsState.playing;
       });
     });
-
+    flutterTts.setProgressHandler((text, start, end, word) {
+      print('text : ' +
+          text +
+          ', start : ' +
+          start.toString() +
+          ', end :' +end.toString()+
+          ' word :' +
+          word);
+    });
     flutterTts.setCompletionHandler(() {
       setState(() {
         print("Complete");
@@ -95,19 +104,23 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<dynamic> _getLanguages() {
-    flutterTts.getLanguages.then((value) => print(value));
-    return flutterTts.getLanguages;
-  }
+  // Future<dynamic> _getLanguages() {
+  //   flutterTts.getLanguages.then((value) => print(value));
+  //   return flutterTts.getLanguages;
+  // }
 
-  Future<dynamic> _getEngines() => flutterTts.getEngines;
-
-  Future _getDefaultEngine() async {
-    var engine = await flutterTts.getDefaultEngine;
-    if (engine != null) {
-      print(engine);
-    }
-  }
+  // Future<dynamic> _getEngines() {
+  //   flutterTts.getEngines.then((value) => print(value));
+  //   return flutterTts.getEngines;
+  // }
+  // //
+  // Future _getDefaultEngine() async {
+  //   // var engine = await flutterTts.getDefaultEngine;
+  //   flutterTts.setEngine('com.google.android.tts');
+  //   if (engine != null) {
+  //     print('getDefaultEngine'+engine);
+  //   }
+  // }
 
   Future _speak() async {
     await flutterTts.setVolume(volume);
@@ -138,44 +151,44 @@ class _MyAppState extends State<MyApp> {
     flutterTts.stop();
   }
 
-  List<DropdownMenuItem<String>> getEnginesDropDownMenuItems(dynamic engines) {
-    var items = <DropdownMenuItem<String>>[];
-    for (dynamic type in engines) {
-      items.add(
-          DropdownMenuItem(value: type as String, child: Text(type as String)));
-    }
-    return items;
-  }
+  // List<DropdownMenuItem<String>> getEnginesDropDownMenuItems(dynamic engines) {
+  //   var items = <DropdownMenuItem<String>>[];
+  //   for (dynamic type in engines) {
+  //     items.add(
+  //         DropdownMenuItem(value: type as String, child: Text(type as String)));
+  //   }
+  //   return items;
+  // }
+  //
+  // void changedEnginesDropDownItem(String selectedEngine) {
+  //   flutterTts.setEngine(selectedEngine);
+  //   language = null;
+  //   setState(() {
+  //     engine = selectedEngine;
+  //   });
+  // }
+  //
+  // List<DropdownMenuItem<String>> getLanguageDropDownMenuItems(
+  //     dynamic languages) {
+  //   var items = <DropdownMenuItem<String>>[];
+  //   for (dynamic type in languages) {
+  //     items.add(
+  //         DropdownMenuItem(value: type as String, child: Text(type as String)));
+  //   }
+  //   return items;
+  // }
 
-  void changedEnginesDropDownItem(String selectedEngine) {
-    flutterTts.setEngine(selectedEngine);
-    language = null;
-    setState(() {
-      engine = selectedEngine;
-    });
-  }
-
-  List<DropdownMenuItem<String>> getLanguageDropDownMenuItems(
-      dynamic languages) {
-    var items = <DropdownMenuItem<String>>[];
-    for (dynamic type in languages) {
-      items.add(
-          DropdownMenuItem(value: type as String, child: Text(type as String)));
-    }
-    return items;
-  }
-
-  void changedLanguageDropDownItem(String selectedType) {
-    setState(() {
-      language = selectedType;
-      flutterTts.setLanguage(language);
-      if (isAndroid) {
-        flutterTts
-            .isLanguageInstalled(language)
-            .then((value) => isCurrentLanguageInstalled = (value as bool));
-      }
-    });
-  }
+  // void changedLanguageDropDownItem(String selectedType) {
+  //   setState(() {
+  //     language = selectedType;
+  //     flutterTts.setLanguage(language);
+  //     if (isAndroid) {
+  //       flutterTts
+  //           .isLanguageInstalled(language)
+  //           .then((value) => isCurrentLanguageInstalled = (value as bool));
+  //     }
+  //   });
+  // }
 
   void _onChange(String text) {
     setState(() {
@@ -196,8 +209,8 @@ class _MyAppState extends State<MyApp> {
             children: [
               _inputSection(),
               _btnSection(),
-              _engineSection(),
-              _futureBuilder(),
+              // _engineSection(),
+              // _futureBuilder(),
               _buildSliders(),
               if (isAndroid) _getMaxSpeechInputLengthSection(),
             ],
@@ -207,33 +220,33 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Widget _engineSection() {
-    if (isAndroid) {
-      return FutureBuilder<dynamic>(
-          future: _getEngines(),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            if (snapshot.hasData) {
-              return _enginesDropDownSection(snapshot.data);
-            } else if (snapshot.hasError) {
-              return Text('Error loading engines...');
-            } else
-              return Text('Loading engines...');
-          });
-    } else
-      return Container(width: 0, height: 0);
-  }
-
-  Widget _futureBuilder() => FutureBuilder<dynamic>(
-      future: _getLanguages(),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.hasData) {
-          return _languageDropDownSection(snapshot.data);
-        } else if (snapshot.hasError) {
-          return Text('Error loading languages...');
-        } else
-          return Text('Loading Languages...');
-      });
-
+  // Widget _engineSection() {
+  //   if (isAndroid) {
+  //     return FutureBuilder<dynamic>(
+  //         future: _getEngines(),
+  //         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+  //           if (snapshot.hasData) {
+  //             return _enginesDropDownSection(snapshot.data);
+  //           } else if (snapshot.hasError) {
+  //             return Text('Error loading engines...');
+  //           } else
+  //             return Text('Loading engines...');
+  //         });
+  //   } else
+  //     return Container(width: 0, height: 0);
+  // }
+  //
+  // Widget _futureBuilder() => FutureBuilder<dynamic>(
+  //     future: _getLanguages(),
+  //     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+  //       if (snapshot.hasData) {
+  //         return _languageDropDownSection(snapshot.data);
+  //       } else if (snapshot.hasError) {
+  //         return Text('Error loading languages...');
+  //       } else
+  //         return Text('Loading Languages...');
+  //     });
+  //
   Widget _inputSection() => Container(
       alignment: Alignment.topCenter,
       padding: EdgeInsets.only(top: 25.0, left: 25.0, right: 25.0),
@@ -269,28 +282,28 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Widget _enginesDropDownSection(dynamic engines) => Container(
-        padding: EdgeInsets.only(top: 50.0),
-        child: DropdownButton(
-          value: engine,
-          items: getEnginesDropDownMenuItems(engines),
-          onChanged: changedEnginesDropDownItem,
-        ),
-      );
-
-  Widget _languageDropDownSection(dynamic languages) => Container(
-      padding: EdgeInsets.only(top: 10.0),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        DropdownButton(
-          value: language,
-          items: getLanguageDropDownMenuItems(languages),
-          onChanged: changedLanguageDropDownItem,
-        ),
-        Visibility(
-          visible: isAndroid,
-          child: Text("Is installed: $isCurrentLanguageInstalled"),
-        ),
-      ]));
+  // Widget _enginesDropDownSection(dynamic engines) => Container(
+  //       padding: EdgeInsets.only(top: 50.0),
+  //       child: DropdownButton(
+  //         value: engine,
+  //         items: getEnginesDropDownMenuItems(engines),
+  //         onChanged: changedEnginesDropDownItem,
+  //       ),
+  //     );
+  //
+  // Widget _languageDropDownSection(dynamic languages) => Container(
+  //     padding: EdgeInsets.only(top: 10.0),
+  //     child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+  //       DropdownButton(
+  //         value: language,
+  //         items: getLanguageDropDownMenuItems(languages),
+  //         onChanged: changedLanguageDropDownItem,
+  //       ),
+  //       Visibility(
+  //         visible: isAndroid,
+  //         child: Text("Is installed: $isCurrentLanguageInstalled"),
+  //       ),
+  //     ]));
 
   Column _buildButtonColumn(Color color, Color splashColor, IconData icon,
       String label, Function func) {

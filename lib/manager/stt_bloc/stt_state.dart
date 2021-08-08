@@ -37,7 +37,7 @@ class SttIndexRecognitionFailure extends SttState {
 }
 
 class SttRecognitionSuccess extends SttState {
-  final String qIndex;
+  final int qIndex;
 
   SttRecognitionSuccess(this.qIndex);
 
