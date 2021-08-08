@@ -13,7 +13,7 @@ class Home extends StatelessWidget {
     var text = '';
     return Scaffold(
         appBar: AppBar(
-          title: Text('Your assistant'),
+          title: Text('مساعدك'),
           centerTitle: true,
         ),
         body: BlocListener<TtsBloc, TtsState>(
@@ -22,12 +22,11 @@ class Home extends StatelessWidget {
             if (listState is TtsPlaying) {
               text = '';
               await showModalBottomSheet(
-                // isScrollControlled: true,
                 context: context,
                 builder: (context) {
                   return BlocBuilder<TtsBloc, TtsState>(
                     buildWhen: (previous, current) =>
-                    current is TtsPlayInProgress ||
+                        current is TtsPlayInProgress ||
                         current is TtsStop ||
                         current is TtsFailure,
                     // ignore: missing_return
@@ -43,7 +42,16 @@ class Home extends StatelessWidget {
                           ),
                         );
                       } else {
-                        Navigator.of(context).pop();
+                        if (Navigator.of(context).canPop())
+                          Navigator.of(context).pop();
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            text,
+                            softWrap: true,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        );
                       }
                     },
                   );

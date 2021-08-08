@@ -30,9 +30,18 @@ class SttBloc extends Bloc<SttEvent, SttState> {
     });
 
     _repository.speechRecognitionStream.listen((event) {
+
+      String _questionIndex;
       if (event.finalResult) {
-        if (int.tryParse(event.recognizedWords) != null) {
-          emit(SttRecognitionSuccess(int.parse(event.recognizedWords)));
+        _questionIndex = event.recognizedWords;
+
+        if (SpeechToTextRepository.arMapper.containsKey(_questionIndex)) {
+          _questionIndex =
+              SpeechToTextRepository.arMapper[event.recognizedWords].toString();
+        }
+        if (int.tryParse(_questionIndex) != null) {
+          emit(SttRecognitionSuccess(int.parse(_questionIndex)));
+
         } else {
           emit(SttIndexRecognitionFailure());
         }
@@ -41,7 +50,7 @@ class SttBloc extends Bloc<SttEvent, SttState> {
   }
 
   @override
-  Future<Function> close() {
+  Future<void> close() {
     _repository.dispose();
     return super.close();
   }
@@ -58,10 +67,12 @@ class SttBloc extends Bloc<SttEvent, SttState> {
   }
 
   void _sttListenStartedHandler() {
+
     _repository.startListening();
   }
 
   void _sttListenCanceledHandler() {
+
     _repository.cancelListening();
   }
 }

@@ -28,7 +28,7 @@ class TextToSpeechRepository {
 
     await flutterTts.setVolume(1.0);
 
-    flutterTts.setLanguage('en-US');
+    flutterTts.setLanguage('ar');
 
     // when the the voice start playing
     flutterTts

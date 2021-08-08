@@ -16,10 +16,10 @@ class FABStt extends StatelessWidget {
 
         if (state is SttFailure) {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Something want wrong!')));
+              .showSnackBar(SnackBar(content: Text('حدث خطأ ما! اعد المحاولة.')));
         } else if (state is SttIndexRecognitionFailure) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('I conn\'t recognize the question number...')));
+              content: Text('لم استطع التعرف على رقم السؤال...')));
         }
       },
       builder: (context, state) {
