@@ -82,7 +82,7 @@ class SpeechToTextRepository {
                 : ListeningStatus.NotListening),
         onError: (errorNotification) =>
             _speechRecognitionErrorSC.sink.add(errorNotification),
-        debugLogging: true,
+        // debugLogging: true,
         finalTimeout: Duration.zero);
     return _hasSpeech;
   }
