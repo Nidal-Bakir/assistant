@@ -29,7 +29,7 @@ class _QListState extends State<QList> {
           );
         } else if (qAState is QaLoadFailure) {
           return Center(
-            child: Text('something want wrong! please try again later. '),
+            child: Text('حدث خطأ ما! اعد المحاولة.'),
           );
         } else if (qAState is QaLoadSuccess) {
           return BlocListener<SttBloc, SttState>(
@@ -39,8 +39,14 @@ class _QListState extends State<QList> {
               if (sttState is SttRecognitionSuccess) {
                 if (_ttsBlocState.state is! TtsPlaying &&
                     _ttsBlocState.state is! TtsPlayInProgress) {
-                  _ttsBlocState.add(TtsTextVoiceStarted(
-                      qAState.qaList[sttState.qIndex-1].answer));
+                  // index out of bound exception protection
+                  if (sttState.qIndex < qAState.qaList.length) {
+                    _ttsBlocState.add(TtsTextVoiceStarted(
+                        qAState.qaList[sttState.qIndex].answer));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('لم استطع التعرف على رقم السؤال...')));
+                  }
                 }
               }
             },

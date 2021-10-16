@@ -11,6 +11,7 @@ import 'package:assistant/repositories/text_to_speech_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'manager/stt_bloc/stt_bloc.dart';
 
@@ -45,8 +46,15 @@ class MyApp extends StatelessWidget {
         create: (context) =>
             TtsBloc(RepositoryProvider.of<TextToSpeechRepository>(context)),
         child: MaterialApp(
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
 
-          title: 'Your assistant',
+          ],
+          supportedLocales: [Locale('ar')],
+          locale: Locale('ar'),
+          title: 'مساعدك',
           theme: ThemeData(
             primarySwatch: Colors.pink,
           ),
@@ -75,12 +83,13 @@ class MyApp extends StatelessWidget {
                     providers: [
                       BlocProvider(
                         create: (context) => SttBloc(
-                            RepositoryProvider.of<SpeechToTextRepository>(context)),
+                            RepositoryProvider.of<SpeechToTextRepository>(
+                                context)),
                       ),
-
                       BlocProvider<QaBloc>(
-                        create: (context) =>
-                            QaBloc(RepositoryProvider.of<FireStoreRepository>(context)),
+                        create: (context) => QaBloc(
+                            RepositoryProvider.of<FireStoreRepository>(
+                                context)),
                       ),
                     ],
                     child: Home(),

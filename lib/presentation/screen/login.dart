@@ -26,105 +26,138 @@ class _LoginState extends State<Login> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('LOG-IN'),
+          title: Text('تسجيل الدخول'),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  ElevatedButton.icon(
+                      onPressed: () {
+                        context
+                            .read<AuthBloc>()
+                            .add(AuthGoogleAccountLoggedIn());
+                      },
+                      icon: Icon(Icons.android),
+                      label: Text('تسجيل الدخول باستخدام حساب Google')),
+                  SizedBox(
+                    height: 16.0,
                   ),
-                  // style: TextStyle(color: Colors.black),
-                  onSaved: (email) => _email = email,
-                  validator: (value) {
-                    value = value ?? '';
-                    if (value.trim().isEmpty) {
-                      return 'please enter a Email';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(
-                  height: 24,
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: _obscureText,
-                  // style: TextStyle(color: Colors.black),
-                  validator: (value) {
-                    value = value ?? '';
-                    if (value.trim().isEmpty) {
-                      return 'please enter a password';
-                    } else if (value.length < 6)
-                      return 'password must be more than 6 character length';
-                    return null;
-                  },
-                  onSaved: (password) => _password = password,
-                  decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          Icons.visibility_rounded,
-                          // color: Colors.blueGrey,
-                        ),
-                        onPressed: () => setState(() {
-                          _obscureText = !_obscureText;
-                        }),
+                  Flex(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    direction: Axis.horizontal,
+                    children: [
+                      Flexible(
+                        child: Divider(thickness: 0.9),
+                        flex: 2,
                       ),
-                      labelText: 'password'),
-                ),
-                SizedBox(
-                  height: 24.0,
-                ),
-                BlocConsumer<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthSuccess) {
-                      Navigator.of(context).pushReplacementNamed('/home');
-                    } else if (state is AuthFailure) {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text(state.msg)));
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is AuthInProgress) {
+                      Flexible(
+                        child: Text('OR'),
+                      ),
+                      Flexible(
+                        child: Divider(
+                          thickness: 0.9,
+                        ),
+                        flex: 2,
+                      )
+                    ],
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: 'البريد الالكتروني',
+                    ),
+                    // style: TextStyle(color: Colors.black),
+                    onSaved: (email) => _email = email,
+                    validator: (value) {
+                      value = value ?? '';
+                      if (value.trim().isEmpty) {
+                        return 'الرجاء ادخال البريد الالكتروني';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: _obscureText,
+                    // style: TextStyle(color: Colors.black),
+                    validator: (value) {
+                      value = value ?? '';
+                      if (value.trim().isEmpty) {
+                        return 'الرجاء ادخال كلمة السر';
+                      } else if (value.length < 6)
+                        return 'يجب ان تكون كلمة السر اكبر من 6 محارف';
+                      return null;
+                    },
+                    onSaved: (password) => _password = password,
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            Icons.visibility_rounded,
+                            // color: Colors.blueGrey,
+                          ),
+                          onPressed: () => setState(() {
+                            _obscureText = !_obscureText;
+                          }),
+                        ),
+                        labelText: 'كلمة السر'),
+                  ),
+                  SizedBox(
+                    height: 24.0,
+                  ),
+                  BlocConsumer<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthSuccess) {
+                        Navigator.of(context).pushReplacementNamed('/home');
+                      } else if (state is AuthFailure) {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(state.msg)));
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is AuthInProgress) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                                onPressed: null,
+                                child: Text('أنشاء حساب جديد')),
+                            CircularProgressIndicator(),
+                          ],
+                        );
+                      }
+
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
-                              onPressed: null, child: Text('CREATE ACCOUNT')),
-                          CircularProgressIndicator(),
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushNamed('/create-account');
+                              },
+                              child: Text('أنشاء حساب جديد')),
+                          ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState.validate()) {
+                                  _formKey.currentState.save();
+                                  context.read<AuthBloc>().add(
+                                      AuthAccountLoggedIn(_email, _password));
+                                }
+                              },
+                              child: Text('تسجيل الدخول'))
                         ],
                       );
-                    }
-
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed('/create-account');
-                            },
-                            child: Text('CREATE ACCOUNT')),
-                        ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState.validate()) {
-                                _formKey.currentState.save();
-                                context.read<AuthBloc>().add(
-                                    AuthAccountLoggedIn(_email, _password));
-                              }
-                            },
-                            child: Text('LOGIN'))
-                      ],
-                    );
-                  },
-                )
-              ],
+                    },
+                  )
+                ],
+              ),
             ),
           ),
         ));

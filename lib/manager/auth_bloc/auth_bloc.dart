@@ -25,20 +25,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield* _authLoginHandler(event.email, event.password);
     } else if (event is AuthStateChecked) {
       yield* _authStateCheckedHandler();
+    } else if (event is AuthGoogleAccountLoggedIn) {
+      yield* _athGoogleAccountLoggedInHandler();
     }
   }
 
   Stream<AuthState> _authLoginHandler(String email, String password) async* {
     yield AuthInProgress();
     try {
-      var _user = await _repository.login(email, password);
-      yield AuthSuccess(_user.user);
+      var _userCredential = await _repository.login(email, password);
+      yield AuthSuccess(_userCredential.user);
     } on UserNotFound catch (e) {
       yield AuthFailure(e.msg);
     } on WrongPassword catch (e) {
       yield AuthFailure(e.msg);
     } on Exception {
-      yield AuthFailure('unknown error try again later! ');
+      yield AuthFailure('حدث خطأ ما يرجى المحاولة لاحقا.');
     }
   }
 
@@ -46,14 +48,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       String email, String password) async* {
     yield AuthInProgress();
     try {
-      var _user = await _repository.createAccount(email, password);
-      yield AuthSuccess(_user.user);
+      var _userCredential = await _repository.createAccount(email, password);
+      yield AuthSuccess(_userCredential.user);
     } on WeakPassword catch (e) {
       yield AuthFailure(e.msg);
     } on EmailAlreadyInUse catch (e) {
       yield AuthFailure(e.msg);
     } on Exception {
-      yield AuthFailure('unknown error try again later! ');
+      yield AuthFailure('حدث خطأ ما يرجى المحاولة لاحقا.');
     }
   }
 
@@ -63,6 +65,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (_user != null) {
       yield AuthSuccess(_user);
+    }
+  }
+
+  Stream<AuthState> _athGoogleAccountLoggedInHandler() async* {
+    yield AuthInProgress();
+    try {
+      var _userCredential = await _repository.signInWithGoogle();
+      yield AuthSuccess(_userCredential.user);
+    } on SignInAborted catch (e) {
+      yield AuthFailure(e.msg);
+    } on Exception {
+      yield AuthFailure('حدث خطأ ما يرجى المحاولة لاحقا.');
     }
   }
 }

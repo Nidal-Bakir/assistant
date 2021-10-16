@@ -21,3 +21,9 @@ class WrongPassword implements Exception {
 
   const WrongPassword(this.msg);
 }
+
+class SignInAborted implements Exception {
+  final String msg;
+
+  const SignInAborted(this.msg);
+}

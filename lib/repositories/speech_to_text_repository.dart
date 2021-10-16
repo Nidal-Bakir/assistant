@@ -7,6 +7,22 @@ import 'package:speech_to_text/speech_to_text.dart';
 enum ListeningStatus { Listening, NotListening }
 
 class SpeechToTextRepository {
+  static final Map<String, int> arMapper = {
+    'واحد': 1,
+    'اثنين': 2,
+    'ثلاثه': 3,
+    'اربعه': 4,
+    'خمسه': 5,
+    'سته': 6,
+    'سبعه': 7,
+    'ثمانيه': 8,
+    'تسعه': 9,
+    'عشره': 10,
+    'احد عشر': 11,
+    'اثنا عشر': 12,
+    'ثلاثه عشر': 13,
+  };
+
   /// sound level for UI
   final StreamController<double> _soundLevelSC = StreamController<double>();
 
@@ -27,6 +43,8 @@ class SpeechToTextRepository {
 
   /// if the init completed or not
   bool _hasSpeech = false;
+
+  String _localId = 'ar_SA';
 
   SpeechToTextRepository() {
     init();
@@ -64,9 +82,8 @@ class SpeechToTextRepository {
                 : ListeningStatus.NotListening),
         onError: (errorNotification) =>
             _speechRecognitionErrorSC.sink.add(errorNotification),
-        debugLogging: true,
+        // debugLogging: true,
         finalTimeout: Duration.zero);
-
     return _hasSpeech;
   }
 
@@ -109,6 +126,7 @@ class SpeechToTextRepository {
         listenFor: Duration(seconds: 30),
         pauseFor: Duration(seconds: 5),
         partialResults: false,
+        localeId: _localId,
         onSoundLevelChange: (level) => _soundLevelSC.sink.add(level),
         cancelOnError: true,
         listenMode: ListenMode.confirmation);

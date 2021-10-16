@@ -27,7 +27,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   }
 
   @override
-  Future<Function> close() {
+  Future<void> close() {
     _repository.dispose();
     return super.close();
   }

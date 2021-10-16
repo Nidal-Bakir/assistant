@@ -37,10 +37,13 @@ class SttIndexRecognitionFailure extends SttState {
 }
 
 class SttRecognitionSuccess extends SttState {
-  final int qIndex;
+  final int _qIndex;
 
-  SttRecognitionSuccess(this.qIndex);
+  // because the lists start from 0 and the user index start from 1 so (-1).
+  int get qIndex => _qIndex - 1;
+
+  SttRecognitionSuccess(this._qIndex);
 
   @override
-  List<Object> get props => [qIndex];
+  List<Object> get props => [_qIndex];
 }

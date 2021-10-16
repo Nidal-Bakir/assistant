@@ -1,5 +1,6 @@
 import 'package:assistant/util/error/auth_error.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class FireBaseAuthRepository {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -15,10 +16,10 @@ class FireBaseAuthRepository {
 
       return userCredential;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'Weak password') {
-        throw WeakPassword(e.code);
-      } else if (e.code == 'Email already in use') {
-        throw EmailAlreadyInUse(e.code);
+      if (e.code == 'weak-password') {
+        throw WeakPassword('كلمة سر ضعيفة');
+      } else if (e.code == 'email-already-in-use') {
+        throw EmailAlreadyInUse('البريد الالكتروني مستخدم بالفعل!');
       }
     } catch (e) {
       rethrow;
@@ -34,12 +35,32 @@ class FireBaseAuthRepository {
       return userCredential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        throw UserNotFound('No user found for that email.');
+        throw UserNotFound('لم نتمكن من العثور على البريد!');
       } else if (e.code == 'wrong-password') {
-        throw WrongPassword('Wrong password provided for that user.');
+        throw WrongPassword('كلمة سر غير صحيحة.');
       }
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      throw SignInAborted('عملية تسجيل الدخول فشلت!');
+    }
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await _auth.signInWithCredential(credential);
   }
 }

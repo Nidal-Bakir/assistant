@@ -30,3 +30,10 @@ class AuthStateChecked extends AuthEvent {
   @override
   List<Object> get props => [];
 }
+
+class AuthGoogleAccountLoggedIn extends AuthEvent {
+  const AuthGoogleAccountLoggedIn();
+
+  @override
+  List<Object> get props => [];
+}

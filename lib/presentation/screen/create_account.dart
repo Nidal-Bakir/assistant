@@ -19,7 +19,7 @@ class _CreateAccountState extends State<CreateAccount> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('CREATE ACCOUNT'),
+          title: Text('أنشاء حساب جديد'),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -28,16 +28,17 @@ class _CreateAccountState extends State<CreateAccount> {
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(keyboardType:TextInputType.emailAddress ,
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: 'البريد الالكتروني',
                     ),
                     // style: TextStyle(color: Colors.black),
                     onSaved: (email) => _email = email,
                     validator: (value) {
                       value = value ?? '';
                       if (value.trim().isEmpty) {
-                        return 'please enter a Email';
+                        return 'الرجاء ادخال البريد الالكتروني';
                       }
                       return null;
                     },
@@ -45,45 +46,49 @@ class _CreateAccountState extends State<CreateAccount> {
                   SizedBox(
                     height: 24,
                   ),
-                  TextFormField( keyboardType: TextInputType.visiblePassword,
+                  TextFormField(
+                    keyboardType: TextInputType.visiblePassword,
                     obscureText: true,
-                    // style: TextStyle(color: Colors.black),
                     validator: (value) {
                       value = value ?? '';
                       if (value.trim().isEmpty) {
-                        return 'please enter a password';
-                      } else if (value.length < 6)
-                        return 'password must be more than 6 character length';
+                        return 'الرجاء ادخال كلمة السر';
+                      } else if (value.length < 6) {
+                        return 'يجب ان تكون كلمة السر اكبر من 6 محارف';
+                      }
+
                       _formKey.currentState.save();
                       if (_password != _rePassword) {
-                        return 'the password not matched! check again.';
+                        return 'كلمة السر غير متطابقة!';
                       }
                       return null;
                     },
                     onSaved: (password) => _password = password,
-                    decoration: InputDecoration(labelText: 'password'),
+                    decoration: InputDecoration(labelText: 'كلمة السر'),
                   ),
                   SizedBox(
                     height: 24,
                   ),
-                  TextFormField( keyboardType: TextInputType.visiblePassword,
+                  TextFormField(
+                    keyboardType: TextInputType.visiblePassword,
                     obscureText: true,
-                    // style: TextStyle(color: Colors.black),
                     validator: (value) {
                       value = value ?? '';
                       if (value.trim().isEmpty) {
-                        return 'please enter a password';
+                        return 'الرجاء ادخال كلمة السر';
                       } else if (value.length < 6) {
-                        return 'password must be more than 6 character length';
+                        return 'يجب ان تكون كلمة السر اكبر من 6 محارف';
                       }
+
                       _formKey.currentState.save();
                       if (_password != _rePassword) {
-                        return 'the password not matched! check again.';
+                        return 'كلمة السر غير متطابقة!';
                       }
                       return null;
                     },
                     onSaved: (rePassword) => _rePassword = rePassword,
-                    decoration: InputDecoration(labelText: 'ReEnter the password'),
+                    decoration:
+                        InputDecoration(labelText: 'ادخل كلمة السر مجددا'),
                   ),
                   SizedBox(
                     height: 24.0,
@@ -105,7 +110,8 @@ class _CreateAccountState extends State<CreateAccount> {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            TextButton(onPressed: null, child: Text('LOGIN')),
+                            TextButton(
+                                onPressed: null, child: Text('تسجيل الدخول')),
                             CircularProgressIndicator(),
                           ],
                         );
@@ -117,17 +123,16 @@ class _CreateAccountState extends State<CreateAccount> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text('LOGIN')),
+                              child: Text('تسجيل الدخول')),
                           ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
                                   _formKey.currentState.save();
-                                  context
-                                      .read<AuthBloc>()
-                                      .add(AuthAccountCreated(_email, _password));
+                                  context.read<AuthBloc>().add(
+                                      AuthAccountCreated(_email, _password));
                                 }
                               },
-                              child: Text('CREATE ACCOUNT'))
+                              child: Text('أنشاء حساب جديد'))
                         ],
                       );
                     },
